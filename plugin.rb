@@ -162,7 +162,7 @@ after_initialize do
         end
 
         def self.check_question2answer(password, crypted_pass)
-            hash, salt = crypted_pass.split(':', 2)
+            salt, hash = crypted_pass.split(':', 2)
             sha1 = Digest::SHA1.hexdigest(salt[0, 8] + password + salt[-8..-1])
             hash == sha1
         end
