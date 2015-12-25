@@ -111,7 +111,8 @@ after_initialize do
             AlternativePassword::check_wordpress(password, crypted_pass) ||
             AlternativePassword::check_bcrypt(password, crypted_pass) ||
             AlternativePassword::check_sha256(password, crypted_pass) ||
-            AlternativePassword::check_wbblite(password, crypted_pass) 
+            AlternativePassword::check_wbblite(password, crypted_pass) ||
+            AlternativePassword::check_question2answer(password, crypted_pass)
         end
 
         def self.check_bcrypt(password, crypted_pass)
@@ -157,6 +158,12 @@ after_initialize do
         def self.check_wbblite(password, crypted_pass)
             salt, hash = crypted_pass.split(':', 2)
             sha1 = Digest::SHA1.hexdigest(salt + Digest::SHA1.hexdigest(salt + Digest::SHA1.hexdigest(password)))
+            hash == sha1
+        end
+
+        def self.check_question2answer(password, crypted_pass)
+            hash, salt = crypted_pass.split(':', 2)
+            sha1 = Digest::SHA1.hexdigest(salt[0, 8] + password + salt[-8..-1])
             hash == sha1
         end
     end
